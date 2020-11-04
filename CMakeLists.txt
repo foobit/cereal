@@ -3,6 +3,8 @@ project (cereal)
 
 option(SKIP_PORTABILITY_TEST "Skip portability (32 bit) tests" OFF)
 option(SKIP_PERFORMANCE_COMPARISON "Skip building performance comparison (requires boost)" OFF)
+option(SKIP_SANDBOX "Skip building sandbox" ON)
+option(SKIP_UNIT_TESTS "Skip building unit tests" ON)
 if(NOT CMAKE_VERSION VERSION_LESS 3.0) # installing cereal requires INTERFACE lib
     option(JUST_INSTALL_CEREAL "Don't do anything besides installing the library" OFF)
 endif()
@@ -75,10 +77,14 @@ find_package(Boost COMPONENTS serialization)
 if(Boost_FOUND)
   include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 endif(Boost_FOUND)
-  
-enable_testing()
-add_subdirectory(unittests)
 
-add_subdirectory(sandbox)
+if(NOT SKIP_UNIT_TESTS)
+    enable_testing()
+    add_subdirectory(unittests)
+endif()
+
+if(NOT SKIP_SANDBOX)
+  add_subdirectory(sandbox)
+endif()
 
 add_subdirectory(doc)
